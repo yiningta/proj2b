@@ -170,7 +170,7 @@ void testPairing() {
         0,
     };
 
-    std::cout << "Calling constructors" << std::endl;
+    std::cout << "Calling constructors!" << std::endl;
 
     // Range-based constructor
     PairingPQ<int> pairing1{vec.cbegin(), vec.cend()};
