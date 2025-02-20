@@ -206,7 +206,7 @@ public:
       temp.push_back(meld(first, second));
     }
     root = temp.front();
-    nodeCount--;
+    this->nodeCount--;
   } // pop()
 
   // Description: Return the most extreme (defined by 'compare') element of
@@ -275,11 +275,11 @@ public:
     // TODO: Implement this function
     Node *newNode = new Node(val);
     if (root == nullptr) {
-      root = newNode;
+      this->root = newNode;
     } else {
-      root = meld(root, newNode);
+      this->root = meld(root, newNode);
     }
-    nodeCount++;
+    this->nodeCount++;
     return newNode;
   } // addNode()
 
