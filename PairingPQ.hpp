@@ -21,7 +21,8 @@ public:
   public:
     // Description: Custom constructor that creates a node containing
     //              the given value.
-    explicit Node(const TYPE &val) : elt{val} {}
+    explicit Node(const TYPE &val)
+        : elt{val}, child(nullptr), sibling(nullptr), parent(nullptr) {}
 
     // Description: Allows access to the element at that Node's position.
     //              There are two versions, getElt() and a dereference
@@ -38,9 +39,9 @@ public:
 
   private:
     TYPE elt;
-    Node *child = nullptr;
-    Node *sibling = nullptr;
-    Node *parent = nullptr;
+    Node *child;
+    Node *sibling;
+    Node *parent;
     // TODO: Add and initialize one extra pointer (parent or previous) as
     // desired.
   }; // Node
@@ -50,8 +51,8 @@ public:
   // Runtime: O(1)
   explicit PairingPQ(COMP_FUNCTOR comp = COMP_FUNCTOR()) : BaseClass{comp} {
     // TODO: Implement this function.
-    root = nullptr;
-    nodeCount = 0;
+    this->root = nullptr;
+    this->nodeCount = 0;
   } // PairingPQ()
 
   // Description: Construct a pairing heap out of an iterator range with an
@@ -62,10 +63,10 @@ public:
             COMP_FUNCTOR comp = COMP_FUNCTOR())
       : BaseClass{comp} {
     // TODO: Implement this function.
-    root = nullptr;
-    nodeCount = 0;
+    this->root = nullptr;
+    this->nodeCount = 0;
     for (InputIterator it = start; it != end; it++) {
-      push(*it);
+      PairingPQ::push(*it);
     }
   } // PairingPQ()
 
@@ -75,15 +76,15 @@ public:
     // TODO: Implement this function.
     // NOTE: The structure does not have to be identical to the original,
     //       but it must still be a valid pairing heap.
-    root = nullptr;
-    nodeCount = 0;
+    this->root = nullptr;
+    this->nodeCount = 0;
     if (other.empty()) {
       return;
     }
     std::deque<Node *> deq;
     deq.push_back(other.root);
     while (!deq.empty()) {
-      Node *current = deq.front();
+      const Node *current = deq.front();
       deq.pop_front();
       if (current->sibling != nullptr) {
         deq.push_back(current->sibling);
@@ -91,7 +92,7 @@ public:
       if (current->child != nullptr) {
         deq.push_back(current->child);
       }
-      push(current->elt);
+      this->push(current->elt);
     }
   } // PairingPQ()
 
@@ -102,8 +103,8 @@ public:
     // HINT: Use the copy-swap method from the "Arrays and Containers"
     // lecture.
     PairingPQ temp(rhs);
-    std::swap(root, temp.root);
     std::swap(nodeCount, temp.nodeCount);
+    std::swap(root, temp.root);
     return *this;
   } // operator=()
 
@@ -181,11 +182,12 @@ public:
     if (nodeCount == 1) {
       root = nullptr;
       nodeCount = 0;
+      delete root;
       return;
     }
     std::deque<Node *> temp;
     Node *current = root->child;
-
+    delete root;
     while (current != nullptr) {
       temp.push_back(current);
       if (current->sibling != nullptr) {
@@ -205,7 +207,7 @@ public:
       second->sibling = nullptr;
       temp.push_back(meld(first, second));
     }
-    root = temp.front();
+    this->root = temp.front();
     this->nodeCount--;
   } // pop()
 
